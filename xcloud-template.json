@@ -1,0 +1,117 @@
+{
+  "schema_version": "1.0",
+  "slug": "ghost",
+  "name": "Ghost",
+  "description": "Open-source publishing platform for blogs, memberships, newsletters, and creator websites.",
+  "version": "1.0.0",
+  "app_version": "6.0.8",
+  "icon": "assets/icon.png",
+  "category": "cms",
+  "service_class": "web_app",
+  "tags": ["cms", "blog", "publishing", "newsletter", "ghost"],
+  "website": "https://ghost.org/",
+
+  "requirements": {
+    "min_ram_mb": 1024,
+    "min_cpu_cores": 1,
+    "min_disk_gb": 4,
+    "stack": ["docker_nginx"],
+    "singleton": false
+  },
+
+  "ports": {
+    "main": {
+      "description": "Ghost web interface",
+      "container_port": 2368,
+      "protocol": "http",
+      "proxy": true,
+      "visibility": "public"
+    }
+  },
+
+  "fields": [
+    {
+      "key": "site_title",
+      "label": "Site Title",
+      "type": "text",
+      "required": false,
+      "default": "My Ghost Site",
+      "validation": "nullable|string|max:120",
+      "group": "site"
+    }
+  ],
+
+  "field_groups": [
+    { "key": "site", "label": "Site Settings", "icon": "xcloud xc-globe" }
+  ],
+
+  "environment_map": {
+    "url": "https://{{ domain }}",
+    "NODE_ENV": "production",
+    "server__host": "0.0.0.0",
+    "server__port": "2368",
+    "database__client": "mysql",
+    "database__connection__host": "db",
+    "database__connection__database": "{{ _generated.db_name }}",
+    "database__connection__user": "{{ _generated.db_user }}"
+  },
+
+  "secrets": {
+    "database__connection__password": "{{ _generated.db_password }}",
+    "MYSQL_ROOT_PASSWORD": "{{ _generated.db_root_password }}",
+    "MYSQL_DATABASE": "{{ _generated.db_name }}",
+    "MYSQL_USER": "{{ _generated.db_user }}",
+    "MYSQL_PASSWORD": "{{ _generated.db_password }}"
+  },
+
+  "generated_values": {
+    "db_name": { "type": "database_name", "prefix": "ghost_" },
+    "db_user": { "type": "database_user", "prefix": "ghost_" },
+    "db_password": { "type": "random", "length": 24 },
+    "db_root_password": { "type": "random", "length": 24 }
+  },
+
+  "credentials": {
+    "type": "url",
+    "display": [
+      { "label": "Site URL", "value": "https://{{ domain }}" },
+      { "label": "Admin URL", "value": "https://{{ domain }}/ghost/" },
+      { "label": "Database Name", "value": "{{ _generated.db_name }}" },
+      { "label": "Database User", "value": "{{ _generated.db_user }}" },
+      { "label": "Database Password", "value": "{{ _generated.db_password }}", "secret": true }
+    ]
+  },
+
+  "health_check": {
+    "type": "http",
+    "path": "/",
+    "port": "main",
+    "expected_status": [200, 301, 302],
+    "timeout_seconds": 120
+  },
+
+  "backup": {
+    "strategy": "volume",
+    "volumes": ["ghost_content", "ghost_db"]
+  },
+
+  "network": {
+    "default_visibility": "public"
+  },
+
+  "volumes": {
+    "persistent": ["ghost_content", "ghost_db"]
+  },
+
+  "post_install": {
+    "message": "Ghost is running at https://{{ domain }}. Finish setup from the admin panel at /ghost/."
+  },
+
+  "release_channel": "stable",
+
+  "upgrade": {
+    "strategy": "rolling",
+    "backup_volumes": true,
+    "breaking_versions": []
+  }
+}
