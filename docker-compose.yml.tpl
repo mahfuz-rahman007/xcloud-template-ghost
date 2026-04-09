@@ -20,7 +20,7 @@ services:
 
   ghost:
     container_name: ghost-{{ site_name }}
-    image: ghost:{{ app_version | default:"6.0.8" }}-alpine
+    image: ghost:{{ app_version | default:"6" }}-alpine
     restart: always
     env_file:
       - .env

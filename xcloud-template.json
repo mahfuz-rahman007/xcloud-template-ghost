@@ -4,7 +4,7 @@
   "name": "Ghost",
   "description": "Open-source publishing platform for blogs, memberships, newsletters, and creator websites.",
   "version": "1.0.0",
-  "app_version": "6.0.8",
+  "app_version": "6",
   "icon": "assets/icon.png",
   "category": "cms",
   "service_class": "web_app",
