@@ -17,8 +17,8 @@ tags:
   - newsletter
   - ghost
 files:
-  compose: docker-compose.yml.tpl
-  env: .env.tpl
+  compose: docker-compose.yml
+  env: .env
 requirements:
   min_ram_mb: 1024
   min_cpu_cores: 1
@@ -69,19 +69,19 @@ credentials:
   display:
     -
       label: 'Site URL'
-      value: 'https://{{ domain }}'
+      value: 'https://${DOMAIN}'
     -
       label: 'Admin URL'
-      value: 'https://{{ domain }}/ghost/'
+      value: 'https://${DOMAIN}/ghost/'
     -
       label: 'Database Name'
-      value: '{{ _generated.db_name }}'
+      value: '${DB_NAME}'
     -
       label: 'Database User'
-      value: '{{ _generated.db_user }}'
+      value: '${DB_USER}'
     -
       label: 'Database Password'
-      value: '{{ _generated.db_password }}'
+      value: '${DB_PASSWORD}'
       secret: true
 post_install:
-  message: 'Ghost is running at https://{{ domain }}. Finish setup from the admin panel at /ghost/.'
+  message: 'Ghost is running at https://${DOMAIN}. Finish setup from the admin panel at /ghost/.'
