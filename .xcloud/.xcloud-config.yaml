@@ -25,14 +25,11 @@ requirements:
   min_disk_gb: 4
   stack:
     - docker_nginx
-  singleton: false
 ports:
   main:
     description: 'Ghost web interface'
     container_port: 2368
-    protocol: http
     proxy: true
-    visibility: public
 fields:
   -
     key: site_title
@@ -65,7 +62,6 @@ volumes:
     - ghost_content
     - ghost_db
 credentials:
-  type: url
   display:
     -
       label: 'Site URL'
